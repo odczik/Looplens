@@ -1,2 +1,3 @@
 # Looplens
-Algorithm visualizer website
+
+Place for visualizing algorithms.
