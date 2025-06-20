@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
-import Navbar from '@/app/components/_navbar';
+import Navbar from '@/app/_components/navbar';
 
 const robotoSans = Roboto({
   variable: "--font-roboto-sans",
-  weight: ["400", "500", "700"],
+  weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
 });
 

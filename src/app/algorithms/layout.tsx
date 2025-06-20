@@ -1,3 +1,5 @@
+import BackButton from '@/app/_components/backButton';
+
 export default function AlgorithmLayout({
     children,
 }: Readonly<{
@@ -6,6 +8,7 @@ export default function AlgorithmLayout({
     return (
         <>
         Layout
+        <BackButton />
         {children}
         </>
     );

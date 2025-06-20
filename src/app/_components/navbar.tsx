@@ -1,8 +1,10 @@
+import style from './navbar.module.css';
+
 export default function Navbar() {
     return (
-        <nav>
+        <nav className={style.navbar}>
             <div>
-                <a href="/">LOGO</a>
+                <a href="/">LOOPLENS</a>
             </div>
             <div>
                 <a href="/algorithms">Explore</a>
