@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
+import Navbar from '@/app/components/_navbar';
+
 const robotoSans = Roboto({
   variable: "--font-roboto-sans",
   weight: ["400", "500", "700"],
@@ -27,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${robotoSans.variable} ${robotoMono.variable}`}>
+        <Navbar />
         {children}
       </body>
     </html>
