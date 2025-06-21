@@ -8,7 +8,7 @@ export default function AlgorithmLayout({
     return (
         <>
         Layout
-        <BackButton />
+        <BackButton fallbackPath='/algorithms' />
         {children}
         </>
     );
