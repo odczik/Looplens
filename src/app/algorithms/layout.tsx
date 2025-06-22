@@ -10,38 +10,38 @@ import DirectoryList from './directoryList';
 
 // Function to get directories recursively, with a maximum depth
 function getDirectories(dirPath: string, basePath: string = '', maxDepth: number = 2, currentDepth: number = 0): any[] {
-  if (currentDepth >= maxDepth) return [];
-  
-  const entries = fs.readdirSync(dirPath);
-  const result = [];
-  
-  for (const entry of entries) {
-    const fullPath = path.join(dirPath, entry);
-    const relativePath = basePath ? `${basePath}/${entry}` : entry;
+    if (currentDepth >= maxDepth) return [];
     
-    try {
-        const stats = fs.statSync(fullPath);
-        if (stats.isDirectory()) {
-            // Convert kebab-case to Title Case
-            const name = entry.split("-").map(part => 
-                part.charAt(0).toUpperCase() + part.slice(1)
-            ).join(" ");
-            
-            const subdirs = getDirectories(fullPath, relativePath, maxDepth, currentDepth + 1);
-            
-            result.push({
-                path: relativePath,
-                name,
-                subdirectories: subdirs,
-                expanded: false
-            });
+    const entries = fs.readdirSync(dirPath);
+    const result = [];
+    
+    for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry);
+        const relativePath = basePath ? `${basePath}/${entry}` : entry;
+        
+        try {
+            const stats = fs.statSync(fullPath);
+            if (stats.isDirectory()) {
+                // Convert kebab-case to Title Case
+                const name = entry.split("-").map(part => 
+                    part.charAt(0).toUpperCase() + part.slice(1)
+                ).join(" ");
+                
+                const subdirs = getDirectories(fullPath, relativePath, maxDepth, currentDepth + 1);
+                
+                result.push({
+                    path: relativePath,
+                    name,
+                    subdirectories: subdirs,
+                    expanded: false
+                });
+            }
+        } catch (error) {
+            console.error(`Error processing ${fullPath}:`, error);
         }
-    } catch (error) {
-        console.error(`Error processing ${fullPath}:`, error);
     }
-  }
-  
-  return result;
+    
+    return result;
 }
 
 export default function AlgorithmLayout({
