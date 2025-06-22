@@ -3,7 +3,9 @@
   --foreground: #171717;
 
   --glass-background: #ededed0d;
+  --glass-background-hover: #ededed0a;
   --glass-text-color: #f3f3f3cb;
+  --glass-text-color-disabled: #abababa0;
   --glass-border-color: #ededed20;
   --glass-shadow-color: #ededed0d;
 }

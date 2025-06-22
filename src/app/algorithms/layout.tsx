@@ -52,16 +52,13 @@ export default function AlgorithmLayout({
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     
-    // Get current URL path
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-    
     // Get directories and their subdirectories
     const algorithms = getDirectories(__dirname);
 
     return (
         <main className={style.main}>
             <aside className={style.sidebar}>
-                <DirectoryList directories={algorithms} currentPath={currentPath} />
+                <DirectoryList directories={algorithms} />
             </aside>
             <div className={style.content}>
                 <BackButton />
