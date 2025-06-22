@@ -1,7 +1,21 @@
-.navbar {
+.main {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    height: 100%;
+    width: 100vw;
+    flex-grow: 1;
+
+    position: relative;
+}
+
+.sidebar {
+    display: flex;
+    justify-content: flex-start;
     align-items: center;
+    flex-direction: column;
 
     padding: 20px 25px;
     margin: 15px;
@@ -17,4 +31,6 @@
 
     font-weight: 500;
     font-size: 1.1rem;
+
+    flex-grow: 0;
 }
