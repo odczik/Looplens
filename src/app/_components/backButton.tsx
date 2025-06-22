@@ -22,7 +22,8 @@ export default function BackButton({ fallbackPath = '/' }) {
     
     return (
         <button onClick={handleClick} className={style.backButton}>
-            &lt; Back
+            <span className={style.iconContainer}><span className={style.icon}></span></span>
+            Back
         </button>
     );
 }

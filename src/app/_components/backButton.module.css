@@ -10,7 +10,47 @@
     flex-grow: 0;
     flex-shrink: 0;
 
+    display: flex;
+    align-items: center;
+
     &:hover {
         text-decoration: underline;
     }
+}
+
+.iconContainer {
+    background: none;
+    border: none;
+
+    cursor: pointer;
+
+    padding: 0;
+    width: 20px;
+    height: 20px;
+
+    position: relative;
+    left: 0px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.iconContainer:disabled .icon {
+    background-color: var(--glass-text-color-disabled);
+}
+
+.icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-color: var(--glass-text-color); /* This controls the color */
+    -webkit-mask-image: url("https://img.icons8.com/sf-black-filled/64/back.png");
+    mask-image: url("https://img.icons8.com/sf-black-filled/64/back.png");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    transition: transform 0.2s ease;
 }
