@@ -60,11 +60,13 @@ export default function AlgorithmLayout({
 
     return (
         <main className={style.main}>
-        <aside className={style.sidebar}>
-            <BackButton fallbackPath='/algorithms' />
-            <DirectoryList directories={algorithms} currentPath={currentPath} />
-        </aside>
-        {children}
+            <aside className={style.sidebar}>
+                <DirectoryList directories={algorithms} currentPath={currentPath} />
+            </aside>
+            <div className={style.content}>
+                <BackButton />
+                {children}
+            </div>
         </main>
     );
 }

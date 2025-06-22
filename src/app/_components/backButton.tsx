@@ -2,6 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import style from './backButton.module.css';
+
 export default function BackButton({ fallbackPath = '/' }) {
     const router = useRouter();
     const [canGoBack, setCanGoBack] = useState(false);
@@ -19,8 +21,8 @@ export default function BackButton({ fallbackPath = '/' }) {
     };
     
     return (
-        <button onClick={handleClick}>
-            Back
+        <button onClick={handleClick} className={style.backButton}>
+            &lt; Back
         </button>
     );
 }
