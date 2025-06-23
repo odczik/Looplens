@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import style from './layout.module.css';
 import { usePathname } from 'next/navigation';
@@ -12,10 +12,19 @@ export default function DirectoryList({ directories, isSubdirectory = false }: {
     isSubdirectory?: boolean
 }) {
     const [directoriesState, setDirectoriesState] = useState(directories);
+    const [sidebarWidthSet, setSidebarWidthSet] = useState(false);
+
+    const sidebarRef = useRef<any>(null);
 
     useEffect(() => {
         setDirectoriesState(directories);
     }, [directories]);
+
+    useEffect(() => {
+        if(sidebarWidthSet || !sidebarRef.current) return;
+        sidebarRef.current.style.width = sidebarRef.current.getBoundingClientRect().width + "px";
+        setSidebarWidthSet(true);
+    }, [sidebarRef.current]);
 
     const toggleDirectory = (path: string) => {
         setDirectoriesState(prevState => 
@@ -26,7 +35,7 @@ export default function DirectoryList({ directories, isSubdirectory = false }: {
     };
 
     return (
-        <ul className={isSubdirectory ? style.directoryListSub : style.directoryList}>
+        <ul className={isSubdirectory ? style.directoryListSub : style.directoryList} ref={isSubdirectory ? null : sidebarRef}>
         {directoriesState.map((dir, i) => (
             <li key={i} className={style.directoryListItem}>
                 <div 
@@ -47,6 +56,7 @@ export default function DirectoryList({ directories, isSubdirectory = false }: {
                     )}
                     <Link 
                         href={`/algorithms/${dir.path}`}
+                        className={style.directoryListLink}
                     >
                         {dir.name}
                     </Link>

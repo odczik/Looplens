@@ -55,10 +55,12 @@
     list-style-type: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 
     margin-left: 20px;
     width: calc(100% - 20px);
+
+    overflow-x: hidden;
 }
 
 .directoryListItem {
@@ -69,6 +71,8 @@
     align-items: flex-start;
     justify-content: flex-start;
     gap: 5px;
+
+    width: 100%;
 }
 .directoryListItemHead {
     display: flex;
@@ -82,9 +86,17 @@
 
     width: 100%;
     height: auto;
+
+    text-overflow: ellipsis;
 }
 .directoryListItemHead:hover {
     background-color: var(--glass-background-hover);
+}
+
+.directoryListLink {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    text-wrap: nowrap;
 }
 
 .toggleButton {
