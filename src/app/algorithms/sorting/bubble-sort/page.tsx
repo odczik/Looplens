@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, use } from 'react';
-import { delay } from '@/app/_utils'
+import { delay, scaleHeight } from '@/app/_utils'
 
 export default function BubbleSortAlgorithm() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,16 +27,6 @@ export default function BubbleSortAlgorithm() {
     
     // Store current position in the sort algorithm
     const sortPositionRef = useRef<{i: number, j: number}>({i: 0, j: 0});
-    
-    // Map array values to visual heights - ensure distinct heights
-    function scaleHeight(value: number, canvas: HTMLCanvasElement): number {
-        const maxValue = size.current - 1; // Maximum value in our array [0-9]
-        const minHeight = canvas.height * 0.1; // Minimum height (10% of canvas)
-        const maxHeight = canvas.height; // Maximum height (90% of canvas)
-        
-        // Linear interpolation between min and max heights
-        return minHeight + (value / maxValue) * (maxHeight - minHeight);
-    }
 
     const drawArray = (arr: number[], highlightIndices: [number, number] | null = null) => {
         const ctx = ctxRef.current;
@@ -58,7 +48,7 @@ export default function BubbleSortAlgorithm() {
             }
             
             // Draw bar
-            const height = scaleHeight(value, canvas);
+            const height = scaleHeight(value, canvas, size);
             ctx.fillRect(index * barWidth, canvas.height - height, barWidth - 2, height);
         
             // Draw value text if size is small enough
@@ -226,6 +216,21 @@ export default function BubbleSortAlgorithm() {
     return (
         <div className="algorithmPlayground">
             <h1>Bubble sort page</h1>
+            <details className="algorithmDescription">
+                <summary>Additional details</summary>
+                <div>
+                    <p>Bubble sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps
+                    them if they are in the wrong order. The pass through the list is repeated until the list is sorted. The algorithm gets its name from the way smaller elements "bubble" to the top of the list.</p>
+                    <p>Time complexity: <b>O(n^2)</b> in the worst case, <b>O(n)</b> in the best case (when the array is already sorted).</p>
+                    <p>Space complexity: <b>O(1)</b> as it sorts the array in place.</p>
+                    <p>This implementation allows you to visualize the sorting process, control the speed of the algorithm, and adjust the size of the array being sorted.</p>
+                    <ul>
+                        <li><span style={{color: '#ff006e'}}>Red</span> - First index being compared</li>
+                        <li><span style={{color: '#4cc9f0'}}>Light Blue</span> - Second index being compared</li>
+                        <li><span style={{color: '#4361ee'}}>Default</span> - Other elements in the array</li>
+                    </ul>
+                </div>
+            </details>
             <div className="bubble-sort-container">
                 <canvas ref={canvasRef} width={800} height={600} />
                 <div className="controlsContainer">
