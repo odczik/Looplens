@@ -85,7 +85,7 @@ export default function QuickSortAlgorithm() {
             ctx.shadowBlur = 0;
         
             // Draw value text if size is small enough
-            if(size.current <= 15) {
+            if(size.current <= 10) {
                 ctx.fillStyle = 'white';
                 ctx.font = '36px Arial';
                 ctx.fillText(value.toString(), index * barWidth + (barWidth / 2) - 10, canvas.height - 20);
