@@ -9,8 +9,8 @@ export default function BubbleSortAlgorithm() {
 
     // Controls
     const [play, setPlay] = useState<boolean>(false);
-    const forwardRef = useRef<HTMLButtonElement>(null!);
     const resetRef = useRef<HTMLButtonElement>(null!);
+    const backwardRef = useRef<HTMLButtonElement>(null!);
 
     // Delays
     const stepDelay = useRef<number>(300); // Delay for each step in milliseconds
@@ -24,6 +24,7 @@ export default function BubbleSortAlgorithm() {
     // Sorting state trackers
     const isSortingRef = useRef<boolean>(false);
     const playRef = useRef<boolean>(play);
+    const previousStatesRef = useRef<{array: number[], i: number, j: number}[]>([]);
     
     // Store current position in the sort algorithm
     const sortPositionRef = useRef<{i: number, j: number}>({i: 0, j: 0});
@@ -141,6 +142,12 @@ export default function BubbleSortAlgorithm() {
                         return;
                     }
                 }
+                
+                previousStatesRef.current.push({
+                    array: [...arr],
+                    i: i,
+                    j: j
+                });
             }
             // Reset j to 0 for the next iteration of the outer loop
             j = 0;
@@ -192,9 +199,17 @@ export default function BubbleSortAlgorithm() {
             resetRef.current.onclick = shuffleArray;
         }
         
+        // Connect backward button (if you're keeping this functionality)
+        if (backwardRef.current) {
+            backwardRef.current.onclick = handleBackward;
+        }
+        
         return () => {
             if (resetRef.current) {
                 resetRef.current.onclick = null;
+            }
+            if (backwardRef.current) {
+                backwardRef.current.onclick = null;
             }
         };
     }, []);
@@ -212,6 +227,27 @@ export default function BubbleSortAlgorithm() {
         size.current = newSize;
         shuffleArray();
     }
+
+    // Add this function before the return statement
+    const handleBackward = async () => {
+        // Pause the sorting if it's currently running
+        setPlay(false);
+        
+        // Check if we have previous states
+        if (previousStatesRef.current.length === 0) {
+            return; // Can't go back further
+        }
+        
+        // Get the previous state
+        const prevState = previousStatesRef.current.pop()!;
+        
+        // Restore the previous state
+        arrayRef.current = [...prevState.array];
+        sortPositionRef.current = { i: prevState.i, j: prevState.j };
+        
+        // Redraw the array with the current comparison highlighted
+        drawArray(arrayRef.current, [prevState.j, prevState.j + 1]);
+    };
 
     return (
         <div className="algorithmPlayground">
@@ -235,6 +271,9 @@ export default function BubbleSortAlgorithm() {
                 <canvas ref={canvasRef} width={800} height={600} />
                 <div className="controlsContainer">
                     <div className="generalControls">
+                        <button className="iconContainer" ref={backwardRef} onClick={handleBackward}>
+                            <span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/undo.png')"}}></span>
+                        </button>
                         <button className="iconContainer" onClick={() => setPlay(!play)}>
                             {play ? (
                                 <span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/pause.png')"}}></span>
@@ -242,7 +281,6 @@ export default function BubbleSortAlgorithm() {
                                 <span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/play--v1.png')"}}></span>
                             )}
                         </button>
-                        <button className="iconContainer" ref={forwardRef}><span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/redo.png')"}}></span></button>
                         <button className="iconContainer" ref={resetRef}><span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/restart--v1.png')"}}></span></button>
                     </div>
                     <div className="algorithmControls">

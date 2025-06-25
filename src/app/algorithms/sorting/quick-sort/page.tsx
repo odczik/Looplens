@@ -9,8 +9,8 @@ export default function QuickSortAlgorithm() {
 
     // Controls
     const [play, setPlay] = useState<boolean>(false);
-    const forwardRef = useRef<HTMLButtonElement>(null!);
     const resetRef = useRef<HTMLButtonElement>(null!);
+    const backwardRef = useRef<HTMLButtonElement>(null!); // Add backward button ref
 
     // Delays
     const stepDelay = useRef<number>(300); // Delay for each step in milliseconds
@@ -40,6 +40,13 @@ export default function QuickSortAlgorithm() {
     // Stack to track recursive calls (for visualization)
     const callStackRef = useRef<{low: number, high: number}[]>([]);
     
+    // Add history tracking for backward functionality
+    const previousStatesRef = useRef<{
+        array: number[],
+        partitionState: typeof partitionStateRef.current,
+        callStack: typeof callStackRef.current
+    }[]>([]);
+
     // Map array values to visual heights - ensure distinct heights
     function scaleHeight(value: number, canvas: HTMLCanvasElement): number {
         const maxValue = size.current - 1; // Maximum value in our array
@@ -65,12 +72,6 @@ export default function QuickSortAlgorithm() {
             
             if(index === highlights.pivot) {
                 ctx.fillStyle = '#ff006e'; // Highlight pivot with red
-                
-                // Add glow effect for pivot
-                ctx.shadowColor = '#ff006e';
-                ctx.shadowBlur = 15;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
             } else if(index === highlights.current) {
                 ctx.fillStyle = '#4cc9f0'; // Highlight current with blue
             } else if(index === highlights.left) {
@@ -204,6 +205,13 @@ export default function QuickSortAlgorithm() {
                     
                     // If current element is smaller than the pivot
                     if (arr[currentJ] < pivotValue) {
+                        // Save state before swap
+                        previousStatesRef.current.push({
+                            array: [...arr],
+                            partitionState: { ...partitionStateRef.current },
+                            callStack: [...callStackRef.current]
+                        });
+                        
                         let currentI = i + 1; // Increment index of smaller element
                         
                         // Swap arr[currentI] and arr[currentJ]
@@ -253,6 +261,13 @@ export default function QuickSortAlgorithm() {
         }
         
         async function partition(arr: number[], low: number, high: number): Promise<number> {
+            // Save state before partition begins
+            previousStatesRef.current.push({
+                array: [...arr],
+                partitionState: partitionStateRef.current ? { ...partitionStateRef.current } : null,
+                callStack: [...callStackRef.current]
+            });
+            
             // Choose rightmost element as pivot
             const pivotIndex = high;
             const pivotValue = arr[pivotIndex];
@@ -284,6 +299,13 @@ export default function QuickSortAlgorithm() {
                 
                 // If current element is smaller than the pivot
                 if (arr[j] < pivotValue) {
+                    // Save state before swap
+                    previousStatesRef.current.push({
+                        array: [...arr],
+                        partitionState: { ...partitionStateRef.current },
+                        callStack: [...callStackRef.current]
+                    });
+                    
                     i++; // Increment index of smaller element
                     
                     // Swap arr[i] and arr[j]
@@ -302,6 +324,13 @@ export default function QuickSortAlgorithm() {
                 i, j: high, phase: 'finalSwap'
             };
             
+            // Save state before final pivot swap
+            previousStatesRef.current.push({
+                array: [...arr],
+                partitionState: { ...partitionStateRef.current },
+                callStack: [...callStackRef.current]
+            });
+            
             // Swap arr[i+1] and arr[high] (put pivot in its final position)
             [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
             arrayRef.current = [...arr]; // Update reference
@@ -318,7 +347,39 @@ export default function QuickSortAlgorithm() {
         }
     };
 
+    // Add handleBackward function
+    const handleBackward = async () => {
+        // Pause the sorting if it's currently running
+        setPlay(false);
+        
+        // Check if we have previous states
+        if (previousStatesRef.current.length === 0) {
+            return; // Can't go back further
+        }
+        
+        // Get the previous state
+        const prevState = previousStatesRef.current.pop()!;
+        
+        // Restore the previous state
+        arrayRef.current = [...prevState.array];
+        partitionStateRef.current = prevState.partitionState ? { ...prevState.partitionState } : null;
+        callStackRef.current = [...prevState.callStack];
+        
+        // Determine what to highlight based on partition state
+        let highlights = {};
+        if (partitionStateRef.current) {
+            const { pivotIndex, j, i } = partitionStateRef.current;
+            highlights = { pivot: pivotIndex, current: j, left: i };
+        }
+        
+        // Redraw the array with appropriate highlighting
+        drawArray(arrayRef.current, highlights);
+    };
+
     const shuffleArray = () => {
+        // Clear history when shuffling
+        previousStatesRef.current = [];
+        
         // Stop any ongoing sorting
         isSortingRef.current = false;
         playRef.current = false;
@@ -358,9 +419,17 @@ export default function QuickSortAlgorithm() {
             resetRef.current.onclick = shuffleArray;
         }
         
+        // Connect backward button
+        if (backwardRef.current) {
+            backwardRef.current.onclick = handleBackward;
+        }
+        
         return () => {
             if (resetRef.current) {
                 resetRef.current.onclick = null;
+            }
+            if (backwardRef.current) {
+                backwardRef.current.onclick = null;
             }
         };
     }, []);
@@ -401,6 +470,9 @@ export default function QuickSortAlgorithm() {
                 <canvas ref={canvasRef} width={800} height={600} />
                 <div className="controlsContainer">
                     <div className="generalControls">
+                        <button className="iconContainer" ref={backwardRef} onClick={handleBackward}>
+                            <span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/undo.png')"}}></span>
+                        </button>
                         <button className="iconContainer" onClick={() => setPlay(!play)}>
                             {play ? (
                                 <span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/pause.png')"}}></span>
@@ -408,7 +480,6 @@ export default function QuickSortAlgorithm() {
                                 <span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/play--v1.png')"}}></span>
                             )}
                         </button>
-                        <button className="iconContainer" ref={forwardRef}><span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/redo.png')"}}></span></button>
                         <button className="iconContainer" ref={resetRef}><span className="icon" style={{maskImage: "url('https://img.icons8.com/material-rounded/96/restart--v1.png')"}}></span></button>
                     </div>
                     <div className="algorithmControls">
